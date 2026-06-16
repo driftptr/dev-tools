@@ -3,13 +3,21 @@
 
 import argparse
 import csv
+import sys
 from pathlib import Path
 
 
 def load_rows(path: Path, key: str) -> dict:
+    rows = {}
     with path.open(encoding="utf-8", newline="") as fh:
         reader = csv.DictReader(fh)
-        return {row[key]: row for row in reader}
+        for row in reader:
+            k = row[key]
+            if k in rows:
+                rows[k].update(row)
+            else:
+                rows[k] = dict(row)
+    return rows
 
 
 def main() -> None:
@@ -22,9 +30,9 @@ def main() -> None:
     left = load_rows(Path(args.left), args.key)
     right = load_rows(Path(args.right), args.key)
     keys = sorted(set(left) | set(right))
-    fieldnames = sorted(set().union(*(row.keys() for row in left.values())))
+    fieldnames = sorted(set().union(*(row.keys() for row in left.values()), *(row.keys() for row in right.values())))
 
-    writer = csv.DictWriter(sys.stdout := __import__("sys").stdout, fieldnames=fieldnames)
+    writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
     writer.writeheader()
     for key in keys:
         row = {}
