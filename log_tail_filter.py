@@ -9,8 +9,10 @@ import sys
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("pattern")
+    parser.add_argument("-i", "--ignore-case", action="store_true")
     args = parser.parse_args()
-    regex = re.compile(args.pattern)
+    flags = re.IGNORECASE if args.ignore_case else 0
+    regex = re.compile(args.pattern, flags)
     for line in sys.stdin:
         if regex.search(line):
             sys.stdout.write(line)
