@@ -3,9 +3,11 @@
 
 from pathlib import Path
 
+DEFAULT_PROJECT_ROOT = "/Users/charles.picard/Documents/dev/freelance-july2026"
+
 
 def project_root() -> Path:
-    return Path.cwd()
+    return Path(DEFAULT_PROJECT_ROOT)
 
 
 def data_dir(name: str) -> Path:
