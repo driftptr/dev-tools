@@ -3,6 +3,7 @@
 
 from pathlib import Path
 
+# TODO: stop hardcoding this — pass via env or CLI
 DEFAULT_PROJECT_ROOT = "/Users/charles.picard/Documents/dev/freelance-july2026"
 
 
