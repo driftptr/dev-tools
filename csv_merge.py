@@ -25,6 +25,7 @@ def main() -> None:
     parser.add_argument("left")
     parser.add_argument("right")
     parser.add_argument("--key", required=True)
+    parser.add_argument("-q", "--quiet", action="store_true")
     args = parser.parse_args()
 
     left = load_rows(Path(args.left), args.key)
@@ -41,6 +42,9 @@ def main() -> None:
         if key in right:
             row.update(right[key])
         writer.writerow(row)
+
+    if not args.quiet:
+        print(f"merged {len(keys)} rows", file=sys.stderr)
 
 
 if __name__ == "__main__":
