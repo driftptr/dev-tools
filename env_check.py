@@ -3,6 +3,14 @@
 
 import os
 import sys
+from pathlib import Path
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(Path.cwd() / ".env")
+except ImportError:
+    pass
 
 
 def main() -> None:
