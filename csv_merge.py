@@ -7,10 +7,10 @@ import sys
 from pathlib import Path
 
 
-def load_rows(path: Path, key: str) -> dict:
+def load_rows(path: Path, key: str, delimiter: str) -> dict:
     rows = {}
     with path.open(encoding="utf-8", newline="") as fh:
-        reader = csv.DictReader(fh)
+        reader = csv.DictReader(fh, delimiter=delimiter)
         for row in reader:
             k = row[key]
             if k in rows:
@@ -26,14 +26,16 @@ def main() -> None:
     parser.add_argument("right")
     parser.add_argument("--key", required=True)
     parser.add_argument("-q", "--quiet", action="store_true")
+    parser.add_argument("--delimiter", default=",", help="Field delimiter (use \\t for TSV)")
     args = parser.parse_args()
+    delimiter = "\t" if args.delimiter == "\\t" else args.delimiter
 
-    left = load_rows(Path(args.left), args.key)
-    right = load_rows(Path(args.right), args.key)
+    left = load_rows(Path(args.left), args.key, delimiter)
+    right = load_rows(Path(args.right), args.key, delimiter)
     keys = sorted(set(left) | set(right))
     fieldnames = sorted(set().union(*(row.keys() for row in left.values()), *(row.keys() for row in right.values())))
 
-    writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
+    writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames, delimiter=delimiter)
     writer.writeheader()
     for key in keys:
         row = {}
