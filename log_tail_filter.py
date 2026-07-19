@@ -11,11 +11,15 @@ def main() -> None:
     parser.add_argument("pattern")
     parser.add_argument("-i", "--ignore-case", action="store_true")
     parser.add_argument("-n", "--line-numbers", action="store_true")
+    parser.add_argument("-v", "--invert", action="store_true", help="Show lines that do NOT match")
     args = parser.parse_args()
     flags = re.IGNORECASE if args.ignore_case else 0
     regex = re.compile(args.pattern, flags)
     for lineno, line in enumerate(sys.stdin, start=1):
-        if regex.search(line):
+        matched = regex.search(line)
+        if args.invert:
+            matched = not matched
+        if matched:
             if args.line_numbers:
                 sys.stdout.write(f"{lineno}: {line}")
             else:
